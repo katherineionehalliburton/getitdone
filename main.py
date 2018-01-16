@@ -62,7 +62,33 @@ def register():
         password = request.form['password']
         verify = request.form['verify']
 
-        """ TODO - validate user's data"""
+        Email_error = ''
+        Password_error = ''
+        Verify_error = ''
+        
+
+        if len(email) < 3 or len(email) > 20 or " " in email or email == "":
+            Email_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
+        if len(password) < 3 or len(password) > 20 or " " in password or password == "":
+            Password_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
+        if len(verify) < 3 or len(verify) > 20 or " " in verify or verify == "":
+            Verify_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
+            
+        if email:
+            if "." not in email and "@" not in email:
+                Email_error = "Please check and re-submit. Please do not use spaces."
+
+        if password != verify:
+            Password_error = "Password and Verify Password fields must match."
+            Verify_error = "Password and Verify Password fields must match."
+
+        if not Email_error and not Password_error and not Verify_error:
+            email = request.form['email']
+            return render_template('todos.html', email=email)
+            
+        else:
+            return render_template('usersignup.html', email=email, Email_error=Email_error, password='',Password_error=Password_error, verify='', Verify_error=Verify_error)
+
 
         existing_user = User.query.filter_by(email=email).first()
         if not existing_user:
